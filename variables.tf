@@ -144,6 +144,13 @@ variable "tags" {
   default     = {}
 }
 
+variable "system_tags" {
+  description = "Tags applied to your resources by the pipeline, if deployed with a Launch workflow. These take precedence over any user-defined tags with matching names if they are supplied."
+  type        = map(string)
+  nullable    = true
+  default     = {}
+}
+
 variable "secret_configurations" {
   description = <<EOF
     Secret configurations to create for the application. Do not provide the

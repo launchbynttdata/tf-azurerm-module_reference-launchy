@@ -51,5 +51,5 @@ locals {
     container_registry_use_managed_identity = true
   }
 
-  tags = merge(local.default_tags, var.tags)
+  tags = merge(local.default_tags, var.tags, var.system_tags)
 }
