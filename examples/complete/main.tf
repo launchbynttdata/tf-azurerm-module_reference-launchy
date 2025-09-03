@@ -17,7 +17,7 @@ module "launchy" {
   logical_product_service = "launchy"
 
   configurations = {
-    "LOG_LEVEL": "INFO"
+    "LOG_LEVEL" : "INFO"
   }
 
   secret_configurations = [

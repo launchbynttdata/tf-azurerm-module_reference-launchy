@@ -91,9 +91,9 @@ module "web_app_slot" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/web_app_slot/azurerm"
   version = "~> 1.0"
 
-  name                = "staging"
-  app_service_id      = module.web_app.web_app_id
-  
+  name           = "staging"
+  app_service_id = module.web_app.web_app_id
+
   key_vault_reference_identity_id = module.user_managed_identity.id
 
 
@@ -106,7 +106,7 @@ module "web_app_slot" {
 
   site_config = merge(local.site_config, {
     application_stack = {
-      docker_image_name = "launchy:staging"
+      docker_image_name   = "launchy:staging"
       docker_registry_url = "https://${module.container_registry.container_registry_login_server}"
     }
   })
@@ -139,7 +139,7 @@ module "scope_map" {
   name                    = module.resource_names["scope_map"].minimal_random_suffix_without_any_separators
   resource_group_name     = module.resource_group.name
   container_registry_name = module.resource_names["container_registry"].minimal_random_suffix_without_any_separators
-  actions                 = [
+  actions = [
     "repositories/launchy/content/read",
     "repositories/launchy/content/write",
     "repositories/launchy/content/delete",
@@ -192,7 +192,7 @@ module "db_server" {
     tenant_id                     = data.azurerm_client_config.client.tenant_id
   }
 
-  administrator_login = local.postgres_admin_username
+  administrator_login    = local.postgres_admin_username
   administrator_password = random_password.postgres_password.result
 
   depends_on = [module.resource_group]
@@ -206,7 +206,7 @@ module "database" {
 
   name      = module.resource_names["database"][var.resource_names_strategy]
   server_id = module.db_server.id
-  
+
   depends_on = [module.resource_group, module.db_server]
 }
 

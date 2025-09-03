@@ -163,8 +163,8 @@ variable "secret_configurations" {
       - DB_USER
       - DB_PASSWORD
 
-    You may not specify preconfigured secrets in this list. Secret names 
-    provided here should match the desired environment variable name and 
+    You may not specify preconfigured secrets in this list. Secret names
+    provided here should match the desired environment variable name and
     capitalization.
   EOF
   type        = list(string)

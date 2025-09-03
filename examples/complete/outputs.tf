@@ -11,19 +11,19 @@
 // limitations under the License.
 
 output "login_command" {
-    value = module.launchy.acr_login_command
-    sensitive = true
+  value     = module.launchy.acr_login_command
+  sensitive = true
 }
 
 output "container_registry_name" {
-    value = module.launchy.container_registry_name
+  value = module.launchy.container_registry_name
 }
 
 output "container_registry_username" {
-    value = module.launchy.container_registry_username
+  value = module.launchy.container_registry_username
 }
 
 output "container_registry_password" {
-    value = module.launchy.container_registry_password
-    sensitive = true
+  value     = module.launchy.container_registry_password
+  sensitive = true
 }
