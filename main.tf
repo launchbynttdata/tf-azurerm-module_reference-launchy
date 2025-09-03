@@ -163,7 +163,8 @@ module "token" {
 }
 
 module "token_password" {
-  source = "git::https://github.com/launchbynttdata/tf-azurerm-module_primitive-container_registry_token_password.git?ref=feature!/init"
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/container_registry_token_password/azurerm"
+  version = "~> 1.0"
 
   container_registry_token_id = module.token.id
 
