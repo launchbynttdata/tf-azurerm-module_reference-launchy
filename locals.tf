@@ -15,6 +15,9 @@ locals {
     provisioner = "Terraform"
   }
 
+  resource_group_name = var.resource_group_name != null ? var.resource_group_name : module.resource_group[0].name
+  resource_group_id   = var.resource_group_name != null ? data.azurerm_resource_group.existing_resource_group[0].id : module.resource_group[0].id
+
   postgres_admin_username = "postgres"
 
   default_secrets = [

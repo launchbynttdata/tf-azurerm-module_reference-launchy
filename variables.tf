@@ -10,6 +10,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+variable "resource_group_name" {
+  description = "The name of the preexisting Resource Group to deploy resources into. If not provided, a new Resource Group will be created with a random suffix."
+  type        = string
+  nullable    = true
+  default     = null
+}
+
 variable "resource_names_map" {
   description = "A map of key to resource_name that will be used by tf-launch-module_library-resource_name to generate resource names"
   type = map(object({

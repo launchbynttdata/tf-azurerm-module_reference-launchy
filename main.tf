@@ -12,6 +12,11 @@
 
 data "azurerm_client_config" "client" {}
 
+data "azurerm_resource_group" "existing_resource_group" {
+  count = var.resource_group_name != null ? 1 : 0
+  name  = var.resource_group_name
+}
+
 resource "random_password" "postgres_password" {
   length           = 32
   special          = true
@@ -38,6 +43,7 @@ module "resource_names" {
 module "resource_group" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/resource_group/azurerm"
   version = "~> 1.0"
+  count   = var.resource_group_name == null ? 1 : 0
 
   name     = module.resource_names["rg"][var.resource_names_strategy]
   location = var.resource_names_map["rg"].region
@@ -49,7 +55,7 @@ module "app_service_plan" {
   version = "~> 1.0"
 
   name                = module.resource_names["app_service_plan"][var.resource_names_strategy]
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group_name
   location            = var.resource_names_map["app_service_plan"].region
 
   os_type      = "Linux"
@@ -66,7 +72,7 @@ module "web_app" {
   version = "~> 1.0"
 
   name                = module.resource_names["web_app"][var.resource_names_strategy]
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group_name
   location            = var.resource_names_map["web_app"].region
 
   service_plan_id                 = module.app_service_plan.id
@@ -121,7 +127,7 @@ module "container_registry" {
   version = "~> 2.0"
 
   container_registry_name = replace(module.resource_names["container_registry"][var.resource_names_strategy], "-", "")
-  resource_group_name     = module.resource_group.name
+  resource_group_name     = local.resource_group_name
   location                = var.resource_names_map["container_registry"].region
 
   sku           = "Basic"
@@ -137,7 +143,7 @@ module "scope_map" {
   version = "~> 1.0"
 
   name                    = module.resource_names["scope_map"].minimal_random_suffix_without_any_separators
-  resource_group_name     = module.resource_group.name
+  resource_group_name     = local.resource_group_name
   container_registry_name = module.resource_names["container_registry"].minimal_random_suffix_without_any_separators
   actions = [
     "repositories/launchy/content/read",
@@ -155,7 +161,7 @@ module "token" {
   version = "~> 1.0"
 
   name                    = module.resource_names["token"][var.resource_names_strategy]
-  resource_group_name     = module.resource_group.name
+  resource_group_name     = local.resource_group_name
   container_registry_name = module.resource_names["container_registry"].minimal_random_suffix_without_any_separators
   scope_map_id            = module.scope_map.id
 
@@ -176,7 +182,7 @@ module "db_server" {
   version = "~> 1.0"
 
   name                = module.resource_names["db_server"][var.resource_names_strategy]
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group_name
   location            = var.resource_names_map["db_server"].region
 
   sku_name                      = "B_Standard_B2s"
@@ -216,7 +222,7 @@ module "key_vault" {
 
   key_vault_name = module.resource_names["key_vault"][var.resource_names_strategy]
   resource_group = {
-    name     = module.resource_group.name
+    name     = local.resource_group_name
     location = var.resource_names_map["rg"].region
   }
 
@@ -232,7 +238,7 @@ module "user_managed_identity" {
   version = "~> 1.3"
 
   user_assigned_identity_name = module.resource_names["user_managed_identity"][var.resource_names_strategy]
-  resource_group_name         = module.resource_group.name
+  resource_group_name         = local.resource_group_name
   location                    = var.resource_names_map["user_managed_identity"].region
 
   depends_on = [module.resource_group]
@@ -245,7 +251,7 @@ module "managed_identity_keyvault_policy" {
   version = "~> 1.2"
 
   principal_id         = module.user_managed_identity.principal_id
-  scope                = module.resource_group.id
+  scope                = local.resource_group_id
   role_definition_name = "Key Vault Secrets User"
   principal_type       = "ServicePrincipal"
 
@@ -257,7 +263,7 @@ module "managed_identity_acr_policy" {
   version = "~> 1.2"
 
   principal_id         = module.user_managed_identity.principal_id
-  scope                = module.resource_group.id
+  scope                = local.resource_group_id
   role_definition_name = "AcrPull"
   principal_type       = "ServicePrincipal"
 
@@ -270,7 +276,7 @@ module "log_analytics_workspace" {
 
   name                = module.resource_names["log_workspace"][var.resource_names_strategy]
   location            = var.resource_names_map["log_workspace"].region
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group_name
   sku                 = "PerGB2018"
 
   tags = merge(var.tags, { resource_name = module.resource_names["log_workspace"].standard })
@@ -284,7 +290,7 @@ module "application_insights" {
   version = "~> 1.0"
 
   name                = module.resource_names["app_insights"][var.resource_names_strategy]
-  resource_group_name = module.resource_group.name
+  resource_group_name = local.resource_group_name
   location            = var.resource_names_map["app_insights"].region
   workspace_id        = module.log_analytics_workspace.id
 
