@@ -15,7 +15,7 @@ module "launchy" {
 
   logical_product_family  = "academy"
   logical_product_service = "launchy"
-  resource_group_name     = "academy-launchy-rg-test"
+  resource_group_name     = "academy-launchy"
 
   configurations = {
     "LOG_LEVEL" : "INFO"

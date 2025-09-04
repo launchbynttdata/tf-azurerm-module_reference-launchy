@@ -62,8 +62,6 @@ module "app_service_plan" {
   sku_name     = "P1v2"
   worker_count = 1
 
-  depends_on = [module.resource_group]
-
   tags = local.tags
 }
 
@@ -88,7 +86,7 @@ module "web_app" {
   app_settings = local.app_settings
   site_config  = local.site_config
 
-  depends_on = [module.resource_group, module.container_registry, module.user_managed_identity, module.app_service_plan]
+  depends_on = [module.container_registry, module.user_managed_identity, module.app_service_plan]
 
   tags = local.tags
 }
@@ -117,7 +115,7 @@ module "web_app_slot" {
     }
   })
 
-  depends_on = [module.resource_group, module.container_registry, module.user_managed_identity, module.web_app]
+  depends_on = [module.container_registry, module.user_managed_identity, module.web_app]
 
   tags = local.tags
 }
@@ -132,8 +130,6 @@ module "container_registry" {
 
   sku           = "Basic"
   admin_enabled = true # Required for Azure App Service https://learn.microsoft.com/en-us/azure/app-service/quickstart-custom-container?tabs=dotnet&pivots=container-linux-vscode#create-a-container-registry
-
-  depends_on = [module.resource_group]
 
   tags = local.tags
 }
@@ -153,7 +149,7 @@ module "scope_map" {
     "repositories/launchy/metadata/write"
   ]
 
-  depends_on = [module.resource_group, module.container_registry]
+  depends_on = [module.container_registry]
 }
 
 module "token" {
@@ -201,8 +197,6 @@ module "db_server" {
   administrator_login    = local.postgres_admin_username
   administrator_password = random_password.postgres_password.result
 
-  depends_on = [module.resource_group]
-
   tags = local.tags
 }
 
@@ -213,7 +207,7 @@ module "database" {
   name      = module.resource_names["database"][var.resource_names_strategy]
   server_id = module.db_server.id
 
-  depends_on = [module.resource_group, module.db_server]
+  depends_on = [module.db_server]
 }
 
 module "key_vault" {
@@ -223,14 +217,14 @@ module "key_vault" {
   key_vault_name = module.resource_names["key_vault"][var.resource_names_strategy]
   resource_group = {
     name     = local.resource_group_name
-    location = var.resource_names_map["rg"].region
+    location = local.resource_group_location
   }
 
   enable_rbac_authorization = true
 
   secrets = merge(local.user_configured_secrets, local.preconfigured_secrets)
 
-  depends_on = [module.resource_group, module.token_password, module.db_server]
+  depends_on = [module.token_password, module.db_server]
 }
 
 module "user_managed_identity" {
@@ -240,8 +234,6 @@ module "user_managed_identity" {
   user_assigned_identity_name = module.resource_names["user_managed_identity"][var.resource_names_strategy]
   resource_group_name         = local.resource_group_name
   location                    = var.resource_names_map["user_managed_identity"].region
-
-  depends_on = [module.resource_group]
 
   tags = local.tags
 }
@@ -255,7 +247,7 @@ module "managed_identity_keyvault_policy" {
   role_definition_name = "Key Vault Secrets User"
   principal_type       = "ServicePrincipal"
 
-  depends_on = [module.resource_group]
+  depends_on = [module.user_managed_identity]
 }
 
 module "managed_identity_acr_policy" {
@@ -267,7 +259,7 @@ module "managed_identity_acr_policy" {
   role_definition_name = "AcrPull"
   principal_type       = "ServicePrincipal"
 
-  depends_on = [module.resource_group]
+  depends_on = [module.user_managed_identity]
 }
 
 module "log_analytics_workspace" {
@@ -281,7 +273,7 @@ module "log_analytics_workspace" {
 
   tags = merge(var.tags, { resource_name = module.resource_names["log_workspace"].standard })
 
-  depends_on = [module.resource_group]
+  depends_on = []
 
 }
 
@@ -294,7 +286,7 @@ module "application_insights" {
   location            = var.resource_names_map["app_insights"].region
   workspace_id        = module.log_analytics_workspace.id
 
-  depends_on = [module.resource_group, module.log_analytics_workspace]
+  depends_on = [module.log_analytics_workspace]
 
   tags = merge(var.tags, { resource_name = module.resource_names["app_insights"].standard })
 }
