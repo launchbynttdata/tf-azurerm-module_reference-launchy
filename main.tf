@@ -83,8 +83,9 @@ module "web_app" {
     identity_ids = [module.user_managed_identity.id]
   }
 
-  app_settings = local.app_settings
-  site_config  = local.site_config
+  app_settings                                   = local.app_settings
+  site_config                                    = local.site_config
+  webdeploy_publish_basic_authentication_enabled = true
 
   depends_on = [module.container_registry, module.user_managed_identity, module.app_service_plan]
 
@@ -100,7 +101,6 @@ module "web_app_slot" {
 
   key_vault_reference_identity_id = module.user_managed_identity.id
 
-
   identity = {
     type         = "UserAssigned"
     identity_ids = [module.user_managed_identity.id]
@@ -114,6 +114,7 @@ module "web_app_slot" {
       docker_registry_url = "https://${module.container_registry.container_registry_login_server}"
     }
   })
+  webdeploy_publish_basic_authentication_enabled = true
 
   depends_on = [module.container_registry, module.user_managed_identity, module.web_app]
 
