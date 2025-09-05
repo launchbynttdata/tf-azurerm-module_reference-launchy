@@ -47,7 +47,7 @@ locals {
 
   site_config = {
     application_stack = {
-      docker_image_name   = "launchy:latest"
+      docker_image_name   = "launchy-api:latest"
       docker_registry_url = "https://${module.container_registry.container_registry_login_server}"
     }
     http2_enabled                                 = true
