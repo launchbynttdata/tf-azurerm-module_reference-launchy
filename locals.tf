@@ -43,7 +43,10 @@ locals {
   }
   user_configured_secrets = { for s in var.secret_configurations : replace(s, "_", "-") => "UPDATE_ME" }
 
-  app_settings = merge(var.configurations, { for s in concat(local.default_secrets, var.secret_configurations) : s => "@Microsoft.KeyVault(SecretUri=${module.key_vault.vault_uri}secrets/${replace(s, "_", "-")})" })
+  app_settings = merge(
+    var.configurations,
+    { "DB_NAME" : module.resource_names["database"][var.resource_names_strategy] },
+  { for s in concat(local.default_secrets, var.secret_configurations) : s => "@Microsoft.KeyVault(SecretUri=${module.key_vault.vault_uri}secrets/${replace(s, "_", "-")})" })
 
   site_config = {
     application_stack = {
