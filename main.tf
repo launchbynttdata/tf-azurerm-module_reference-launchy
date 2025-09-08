@@ -300,12 +300,17 @@ module "monitor_diagnostic_setting_prod" {
   target_resource_id         = module.web_app.web_app_id
   log_analytics_workspace_id = module.log_analytics_workspace.id
   enabled_log = [
-    { category = "AppServiceConsoleLogs" },
-    { category = "AppServiceHTTPLogs" },
+    { category = "AppServiceAntivirusScanAuditLogs" },
+    { category = "AppServiceAppLogs" },
     { category = "AppServiceAuditLogs" },
-    { category = "AppServiceEnvironmentPlatformLogs" },
+    { category = "AppServiceConsoleLogs" },
+    { category = "AppServiceFileAuditLogs" },
+    { category = "AppServiceHTTPLogs" },
     { category = "AppServiceIPSecAuditLogs" },
     { category = "AppServicePlatformLogs" },
+  ]
+  metrics = [
+    { category = "AllMetrics", enabled = true }
   ]
 }
 
@@ -320,13 +325,11 @@ module "monitor_diagnostic_setting_staging" {
     { category = "AppServiceAntivirusScanAuditLogs" },
     { category = "AppServiceAppLogs" },
     { category = "AppServiceAuditLogs" },
-    { category = "AppServiceAuthenticationLogs" },
     { category = "AppServiceConsoleLogs" },
     { category = "AppServiceFileAuditLogs" },
     { category = "AppServiceHTTPLogs" },
     { category = "AppServiceIPSecAuditLogs" },
     { category = "AppServicePlatformLogs" },
-
   ]
   metrics = [
     { category = "AllMetrics", enabled = true }
