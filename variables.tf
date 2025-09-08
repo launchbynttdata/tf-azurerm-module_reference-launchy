@@ -67,6 +67,12 @@ variable "resource_names_map" {
     log_workspace = {
       name       = "logs"
       max_length = 60
+    },
+    diagnostic_settings_prod = {
+      name = "diagprod"
+    }
+    diagnostic_settings_staging = {
+      name = "diagstaging"
     }
   }
 }

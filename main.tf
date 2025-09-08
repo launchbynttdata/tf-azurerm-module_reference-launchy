@@ -291,3 +291,40 @@ module "application_insights" {
 
   tags = merge(var.tags, { resource_name = module.resource_names["app_insights"].standard })
 }
+
+module "monitor_diagnostic_setting_prod" {
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/monitor_diagnostic_setting/azurerm"
+  version = "~> 3.1"
+
+  name                       = module.resource_names["diagnostic_settings_prod"][var.resource_names_strategy]
+  target_resource_id         = module.web_app.web_app_id
+  log_analytics_workspace_id = module.log_analytics_workspace.id
+  enabled_log = [
+    { category = "AppServiceConsoleLogs" },
+    { category = "AppServiceHTTPLogs" },
+    { category = "AppServiceAuditLogs" },
+    { category = "AppServiceEnvironmentPlatformLogs" },
+    { category = "AppServiceIPSecAuditLogs" },
+    { category = "AppServicePlatformLogs" },
+  ]
+}
+
+module "monitor_diagnostic_setting_staging" {
+  source  = "terraform.registry.launch.nttdata.com/module_primitive/monitor_diagnostic_setting/azurerm"
+  version = "~> 3.1"
+
+  name                       = module.resource_names["diagnostic_settings_prod"][var.resource_names_strategy]
+  target_resource_id         = module.web_app_slot.web_app_slot_id
+  log_analytics_workspace_id = module.log_analytics_workspace.id
+  enabled_log = [
+    { category = "AppServiceConsoleLogs" },
+    { category = "AppServiceHTTPLogs" },
+    { category = "AppServiceAuditLogs" },
+    { category = "AppServiceEnvironmentPlatformLogs" },
+    { category = "AppServiceIPSecAuditLogs" },
+    { category = "AppServicePlatformLogs" },
+  ]
+  metrics = [
+    { category = "AllMetrics", enabled = true }
+  ]
+}

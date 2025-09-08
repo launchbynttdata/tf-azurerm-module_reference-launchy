@@ -19,6 +19,9 @@ module "launchy" {
 
   configurations = {
     "LOG_LEVEL" : "INFO"
+    "AZURE_OPENAI_API_VERSION" : "2025-03-01-preview"
+    "AZURE_ENDPOINT" : "https://js-bench.openai.azure.com/"
+    "AZURE_OPENAI_EMBEDDING_MODEL" : "text-embedding-ada-002"
   }
 
   secret_configurations = [
