@@ -317,12 +317,16 @@ module "monitor_diagnostic_setting_staging" {
   target_resource_id         = module.web_app_slot.web_app_slot_id
   log_analytics_workspace_id = module.log_analytics_workspace.id
   enabled_log = [
-    { category = "AppServiceConsoleLogs" },
-    { category = "AppServiceHTTPLogs" },
+    { category = "AppServiceAntivirusScanAuditLogs" },
+    { category = "AppServiceAppLogs" },
     { category = "AppServiceAuditLogs" },
-    { category = "AppServiceEnvironmentPlatformLogs" },
+    { category = "AppServiceAuthenticationLogs" },
+    { category = "AppServiceConsoleLogs" },
+    { category = "AppServiceFileAuditLogs" },
+    { category = "AppServiceHTTPLogs" },
     { category = "AppServiceIPSecAuditLogs" },
     { category = "AppServicePlatformLogs" },
+
   ]
   metrics = [
     { category = "AllMetrics", enabled = true }
