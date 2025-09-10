@@ -27,16 +27,12 @@ locals {
     "ACR_TOKEN_PASSWORD_2",
     "DB_HOST",
     "DB_USER",
-    "DB_PASSWORD",
-    "APP_INSIGHTS_INSTRUMENTATION_KEY",
-    "APP_INSIGHTS_CONNECTION_STRING",
+    "DB_PASSWORD"
   ]
   preconfigured_secrets = {
     "ACR-TOKEN-USER" : module.resource_names["token"][var.resource_names_strategy]
     "ACR-TOKEN-PASSWORD-1" : module.token_password.password1
     "ACR-TOKEN-PASSWORD-2" : module.token_password.password2
-    "APP-INSIGHTS-INSTRUMENTATION-KEY" : module.application_insights.instrumentation_key
-    "APP-INSIGHTS-CONNECTION-STRING" : module.application_insights.connection_string
     "DB-USER" : local.postgres_admin_username
     "DB-PASSWORD" : random_password.postgres_password.result
     "DB-HOST" : module.db_server.fqdn

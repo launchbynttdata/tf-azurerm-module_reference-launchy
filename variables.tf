@@ -60,10 +60,6 @@ variable "resource_names_map" {
     scope_map = {
       name = "scopemap"
     }
-    app_insights = {
-      name       = "appins"
-      max_length = 60
-    }
     log_workspace = {
       name       = "logs"
       max_length = 60

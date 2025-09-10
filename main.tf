@@ -278,20 +278,6 @@ module "log_analytics_workspace" {
 
 }
 
-module "application_insights" {
-  source  = "terraform.registry.launch.nttdata.com/module_primitive/application_insights/azurerm"
-  version = "~> 1.0"
-
-  name                = module.resource_names["app_insights"][var.resource_names_strategy]
-  resource_group_name = local.resource_group_name
-  location            = var.resource_names_map["app_insights"].region
-  workspace_id        = module.log_analytics_workspace.id
-
-  depends_on = [module.log_analytics_workspace]
-
-  tags = merge(var.tags, { resource_name = module.resource_names["app_insights"].standard })
-}
-
 module "monitor_diagnostic_setting_prod" {
   source  = "terraform.registry.launch.nttdata.com/module_primitive/monitor_diagnostic_setting/azurerm"
   version = "~> 3.1"
